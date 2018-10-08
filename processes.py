@@ -1,4 +1,5 @@
 import os
+import time
 import face_recognition
 import cv2
 import pickle
@@ -52,6 +53,8 @@ def recognize(im_array):
     return face_names
 
 if __name__ == "__main__":
+    start_time = time.time()
     im = cv2.imread('FaceDb/AiVanh/AiVanh (1).png')
     name = recognize(im)
     print (name)
+    print("--- %s seconds ---" % (time.time() - start_time))
