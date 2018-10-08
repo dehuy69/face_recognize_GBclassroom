@@ -40,4 +40,4 @@ def recognize(im_array):
 if __name__ == "__main__":
     im = cv2.imread('FaceDb/AiVanh/AiVanh (1).png')
     name = recognize(im)
-    print name
+    print (name)
