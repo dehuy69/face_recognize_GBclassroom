@@ -1,7 +1,7 @@
 import os
 import face_recognition
 import cv2
-
+import pickle
 def load_face_db(path='FaceDb'):
     known_face_encodings = []
     label_names = []
@@ -22,8 +22,22 @@ def load_face_db(path='FaceDb'):
             known_face_encodings.append(face_encodings[0])
             label_names.append(name)
             print (im_name, im.shape, 'num faces:', len(face_encodings), ' success')
+    known_face_encodings_f = open('known_face_encodings.pkl', 'wb')
+    label_names_f = open('label_names.pkl', 'wb')
+    pickle.dump(known_face_encodings, known_face_encodings_f)
+    pickle.dump(label_names, label_names_f)
+    known_face_encodings_f.close()
+    label_names_f.close()
     return known_face_encodings, label_names
-known_face_encodings, known_face_names = load_face_db()
+
+# known_face_encodings, known_face_names = load_face_db()
+known_face_encodings_f = open('known_face_encodings.pkl', 'rb')
+label_names_f = open('label_names.pkl', 'rb')
+known_face_encodings = pickle.load(known_face_encodings_f)
+known_face_names = pickle.load(label_names_f)
+known_face_encodings_f.close()
+label_names_f.close()
+
 
 def recognize(im_array):
     face_locations = face_recognition.face_locations(im_array)
