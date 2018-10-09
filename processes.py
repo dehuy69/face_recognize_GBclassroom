@@ -3,6 +3,22 @@ import time
 import face_recognition
 import cv2
 import pickle
+
+Faces = {
+    'AiVanh':{'job':'teacher STEM','gender':'female','age':[18, 24]},
+    'BaoVan':{'job':'teacher STEM','gender':'female','age':[18, 24]},
+    'DangHuy':{'job':'Engineer','gender':'male','age':[18, 24]},
+    'HongLinh':{'job':'Sale Marketer','gender':'female','age':[18, 24]},
+    'HongThi':{'job':'teacher STEM','gender':'female','age':[25, 32]},
+    'KimNgan':{'job':'teacher STEM','gender':'female','age':[25, 32]},
+    'MongHuyen':{'job':'teacher STEM','gender':'female','age':[25, 32]},
+    'ThanhGiang':{'job':'Manager','gender':'female','age':[25, 32]},
+    'ThuThuy':{'job':'teacher STEM','gender':'female','age':[25, 32]},
+    'TrangQuynh':{'job':'Consultant Lead','gender':'female','age':[18, 24]},
+    'VanNhan':{'job':'Engineer','gender':'male','age':[18, 24]},
+    'XuanSon':{'job':'teacher STEM','gender':'male','age':[25, 32]},
+    'YenNhi':{'job':'teacher STEM','gender':'female','age':[25, 32]}
+}
 def load_face_db(path='FaceDb'):
     known_face_encodings = []
     label_names = []
@@ -45,16 +61,18 @@ def recognize(im_array):
     face_encodings = face_recognition.face_encodings(im_array, face_locations)
     face_names = []
     for face_encoding in face_encodings:
-        matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+        matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.4)
         if True in matches:
             first_match_index = matches.index(True)
             name = known_face_names[first_match_index]
             face_names.append(name)
+        else:
+            face_names = None
     return face_names
 
 if __name__ == "__main__":
     start_time = time.time()
-    im = cv2.imread('FaceDb/AiVanh/AiVanh (1).png')
+    im = cv2.imread('FaceDb/KimNgan/KimNgan (3).jpeg')
     name = recognize(im)
     print (name)
     print("--- %s seconds ---" % (time.time() - start_time))
