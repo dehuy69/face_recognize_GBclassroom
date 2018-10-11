@@ -16,4 +16,5 @@ def test():
     name = recognize(img)
     return jsonify({'name':name})
 # start flask app
-app.run(host="0.0.0.0", port=5000, debug=True)
+server_ip = '0.0.0.0'
+app.run(host=server_ip, port=8080, debug=True)

@@ -11,7 +11,8 @@ privious_data = []
 privious_time = 0
 camera.start_preview(fullscreen=False, window=(100,20,480,320))
 #server address
-addr = 'http://localhost:5000'
+server_ip = '0.0.0.0'
+addr = 'http://%s:8080' % (server_ip)
 test_url = addr + '/api/test'
 
 # prepare headers for http request
