@@ -5,6 +5,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 #camera setup
 camera = PiCamera()
+camera.resolution = (480, 320)
 rawCapture = PiRGBArray(camera)
 privious_data = []
 privious_time = 0
