@@ -28,6 +28,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=T
         # decode response
         print (response)
         print (json.loads(response.text))
+        rawCapture.truncate(0)
     except:
         camera.stop_preview()
         break
