@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px;') }}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+{{infoTable}}<br>
+<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Update member</button>
+  <div id="demo" class="collapse">
+    <form action="/" enctype="multipart/form-data" method="post">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title"/><br>
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description"/><br>
+        {{ dropzone.create('/') }}
+        <input type="submit" id="submit" value="Submit and Upload">
+    </form>
+
+    <form id="delete" action="/" method ="post" enctype=multipart/form-data>
+        <input id="index" type="text" name="number" placeholder="Enter index delete" autocomplete="off" style="width:200px" >
+        <input id="ok" type="submit" name="submit">
+    </form>
+        {{ dropzone.load_js() }}
+        {{ dropzone.config() }}
+</body>
+</html>

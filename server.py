@@ -1,11 +1,30 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, Markup
+from flask_dropzone import Dropzone
+from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import numpy as np
 import cv2
-from processes import recognize
+import os
+from processes import recognize, info
+
 # Initialize the Flask application
 app = Flask(__name__)
+
+# Dropzone settings
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config.update(
+    UPLOADED_PATH=os.path.join(basedir, 'facePhotos'),
+    # Flask-Dropzone config:
+    DROPZONE_ALLOWED_FILE_TYPE='image',
+    DROPZONE_MAX_FILE_SIZE=3,
+    DROPZONE_MAX_FILES=20,
+    DROPZONE_IN_FORM=True,
+    DROPZONE_UPLOAD_ON_CLICK=True,
+    DROPZONE_UPLOAD_ACTION='listofpeople',  # URL or endpoint
+    DROPZONE_UPLOAD_BTN_ID='submit',
+)
+dropzone = Dropzone(app)
 # route http posts to this method
-@app.route('/api/test', methods=['POST'])
+@app.route('/api/recognizeface', methods=['POST'])
 def test():
     r = request
     # convert string of image data to uint8
@@ -15,6 +34,20 @@ def test():
     print ('server print: ', img.shape)
     name = recognize(img)
     return jsonify({'name':name})
+
+@app.route('/', methods=['POST', 'GET'])
+def listofpeople():
+    if request.method == 'GET':
+        return render_template('index.html', infoTable = Markup(info.to_html()))
+        # return render_template('index.html', infoTable = )
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        print('file uploaded and form submit<br>title: %s<br> description: %s' % (title, description))
+        for key, f in request.files.items():
+            if key.startswith('file'):
+                f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+    return render_template('index.html')
 # start flask app
-server_ip = '192.168.1.182'
+server_ip = 'localhost'
 app.run(host=server_ip, port=8080, debug=True)

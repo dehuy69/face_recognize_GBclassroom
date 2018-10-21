@@ -3,9 +3,10 @@ import time
 import face_recognition
 import cv2
 import pickle
+import pandas as pd
 
 Faces = {
-    'AiVanh':{'job':'teacher STEM','gender':'female','age':[18, 24]},
+    '1_AiVanh':{'job':'teacher STEM','gender':'female','age':[18, 24]},
     'BaoVan':{'job':'teacher STEM','gender':'female','age':[18, 24]},
     'DangHuy':{'job':'Engineer','gender':'male','age':[18, 24]},
     'HongLinh':{'job':'Sale Marketer','gender':'female','age':[18, 24]},
@@ -48,6 +49,7 @@ def load_face_db(path='FaceDb'):
     return known_face_encodings, label_names
 
 # known_face_encodings, known_face_names = load_face_db()
+info = pd.read_csv('FaceDb/FaceDB')
 known_face_encodings_f = open('known_face_encodings.pkl', 'rb')
 label_names_f = open('label_names.pkl', 'rb')
 known_face_encodings = pickle.load(known_face_encodings_f)
