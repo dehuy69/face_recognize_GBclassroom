@@ -4,7 +4,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_cl
 import numpy as np
 import cv2
 import os
-from processes import recognize, info
+from processes import recognize, info, update_member_to_csv
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -19,7 +19,7 @@ app.config.update(
     DROPZONE_MAX_FILES=20,
     DROPZONE_IN_FORM=True,
     DROPZONE_UPLOAD_ON_CLICK=True,
-    DROPZONE_UPLOAD_ACTION='listofpeople',  # URL or endpoint
+    DROPZONE_UPLOAD_ACTION='addmember',  # URL or endpoint
     DROPZONE_UPLOAD_BTN_ID='submit',
 )
 dropzone = Dropzone(app)
@@ -48,6 +48,21 @@ def listofpeople():
             if key.startswith('file'):
                 f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
     return render_template('index.html')
+
+@app.route('/addmember', methods=['POST'])
+def addmember():
+    if request.method == 'POST':
+        name = request.form.get('title')
+        age = request.form.get('age')
+        gender = request.form.get('gender')
+        job = request.form.get('job')
+        info = update_member_to_csv(name,age,gender,job)
+
+        for key, f in request.files.items():
+            if key.startswith('file'):
+                f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+    return render_template('index.html')
+
 # start flask app
 server_ip = 'localhost'
 app.run(host=server_ip, port=8080, debug=True)

@@ -20,6 +20,14 @@ Faces = {
     'XuanSon':{'job':'teacher STEM','gender':'male','age':[25, 32]},
     'YenNhi':{'job':'teacher STEM','gender':'female','age':[25, 32]}
 }
+global info
+info = pd.read_csv('FaceDB')
+def update_member_to_csv(name, age, gender, job):
+    info = pd.read_csv('FaceDB')
+    info = info.append({'name':name, 'age':age, 'gender':gender, 'job':job}, ignore_index=True)
+    info.to_csv('FaceDB')
+    return info
+
 def load_face_db(path='FaceDb'):
     known_face_encodings = []
     label_names = []
@@ -49,7 +57,7 @@ def load_face_db(path='FaceDb'):
     return known_face_encodings, label_names
 
 # known_face_encodings, known_face_names = load_face_db()
-info = pd.read_csv('FaceDb/FaceDB')
+
 known_face_encodings_f = open('known_face_encodings.pkl', 'rb')
 label_names_f = open('label_names.pkl', 'rb')
 known_face_encodings = pickle.load(known_face_encodings_f)
