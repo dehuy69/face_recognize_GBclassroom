@@ -53,11 +53,12 @@ def listofpeople():
 def addmember():
     if request.method == 'POST':
         print (request.form)
+        nickname = request.form.get('nickname')
         name = request.form.get('name')
         age = request.form.get('age')
         gender = request.form.get('gender')
         job = request.form.get('job')
-        info = update_member_to_csv(name,age,gender,job)
+        info = update_member_to_csv(nickname, name, age, gender, job)
         print (name,age,gender,job)
         # print ("ten: %s, tuoi: %s, gioi tinh: %s, job: %s") %(name,age,gender,job)
         for key, f in request.files.items():

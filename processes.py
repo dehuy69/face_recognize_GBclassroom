@@ -20,11 +20,14 @@ Faces = {
     'XuanSon':{'job':'teacher STEM','gender':'male','age':[25, 32]},
     'YenNhi':{'job':'teacher STEM','gender':'female','age':[25, 32]}
 }
-global info
+
 info = pd.read_csv('FaceDB')
-def update_member_to_csv(name, age, gender, job):
+def update_member_to_csv(nickname, name, age, gender, job):
     info = pd.read_csv('FaceDB')
-    info = info.append({'name':name, 'age':age, 'gender':gender, 'job':job}, ignore_index=True)
+    df2 = pd.DataFrame([[nickname, name, job, gender, age]], columns=['nickname','name','job','gender','age'])
+    info = info.append(df2)
+    f = open('FaceDB', 'wb')
+    f.close()
     info.to_csv('FaceDB')
     return info
 
