@@ -1,16 +1,17 @@
 from flask import Flask, request, jsonify, render_template, Markup
 from flask_dropzone import Dropzone
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+from werkzeug.utils import secure_filename
 import numpy as np
 import cv2
 import os
 from processes import recognize, info, update_member_to_csv
-
+from face_recognition import load_image_file
 # Initialize the Flask application
 app = Flask(__name__)
-
 # Dropzone settings
 basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'facePhotos')
 app.config.update(
     UPLOADED_PATH=os.path.join(basedir, 'facePhotos'),
     # Flask-Dropzone config:
@@ -25,7 +26,7 @@ app.config.update(
 dropzone = Dropzone(app)
 # route http posts to this method
 @app.route('/api/recognizeface', methods=['POST'])
-def test():
+def recognizeface():
     r = request
     # convert string of image data to uint8
     nparr = np.fromstring(r.data, np.uint8)
@@ -34,6 +35,21 @@ def test():
     print ('server print: ', img.shape)
     name = recognize(img)
     return jsonify({'name':name})
+
+@app.route('/test', methods=['POST', 'GET'])
+def test():
+    if request.method == 'POST':
+        if 'pic' in request.files:
+            file = request.files['pic']
+            filename = secure_filename(file.filename)
+            im_path = os.path.join(app.config['UPLOADED_PATH'], filename)
+            file.save(im_path)
+            im = load_image_file(im_path)
+            print (im)
+            name = recognize(im)
+            print (name)
+    return render_template('test.html', im_path = im_path, face_name = name)
+
 
 @app.route('/', methods=['POST', 'GET'])
 def listofpeople():

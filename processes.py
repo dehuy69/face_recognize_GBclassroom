@@ -4,7 +4,7 @@ import face_recognition
 import cv2
 import pickle
 import pandas as pd
-
+'''
 Faces = {
     '1_AiVanh':{'job':'teacher STEM','gender':'female','age':[18, 24]},
     'BaoVan':{'job':'teacher STEM','gender':'female','age':[18, 24]},
@@ -20,15 +20,15 @@ Faces = {
     'XuanSon':{'job':'teacher STEM','gender':'male','age':[25, 32]},
     'YenNhi':{'job':'teacher STEM','gender':'female','age':[25, 32]}
 }
+'''
 
-info = pd.read_csv('FaceDB')
 def update_member_to_csv(nickname, name, age, gender, job):
-    info = pd.read_csv('FaceDB')
+    info = pd.read_csv('FaceDB.csv')
     df2 = pd.DataFrame([[nickname, name, job, gender, age]], columns=['nickname','name','job','gender','age'])
     info = info.append(df2)
-    f = open('FaceDB', 'wb')
+    f = open('FaceDB.csv', 'wb')
     f.close()
-    info.to_csv('FaceDB')
+    info.to_csv('FaceDB.csv')
     return info
 
 def load_face_db(path='FaceDb'):
@@ -60,7 +60,7 @@ def load_face_db(path='FaceDb'):
     return known_face_encodings, label_names
 
 # known_face_encodings, known_face_names = load_face_db()
-
+info = pd.read_csv('FaceDB.csv')
 known_face_encodings_f = open('known_face_encodings.pkl', 'rb')
 label_names_f = open('label_names.pkl', 'rb')
 known_face_encodings = pickle.load(known_face_encodings_f)
@@ -73,15 +73,18 @@ def recognize(im_array):
     face_locations = face_recognition.face_locations(im_array)
     face_encodings = face_recognition.face_encodings(im_array, face_locations)
     face_names = []
+    infos_of_face = []
     for face_encoding in face_encodings:
         matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.4)
         if True in matches:
             first_match_index = matches.index(True)
             name = known_face_names[first_match_index]
             face_names.append(name)
+            info_of_face = info.query('nickname == @name')
+            infos_of_face.append(info_of_face.to_dict(orient='records')[0])
         else:
             face_names = None
-    return face_names
+    return infos_of_face
 
 if __name__ == "__main__":
     start_time = time.time()
