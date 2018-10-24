@@ -83,5 +83,5 @@ def addmember():
     return render_template('index.html')
 
 # start flask app
-server_ip = 'localhost'
+server_ip = '192.168.1.182'
 app.run(host=server_ip, port=8080, debug=True)
