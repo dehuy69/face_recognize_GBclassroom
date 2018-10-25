@@ -33,8 +33,8 @@ def recognizeface():
     # decode image
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     print ('server print: ', img.shape)
-    name = recognize(img)
-    return jsonify({'name':name})
+    faces_info = recognize(img)
+    return jsonify(faces_info)
 
 @app.route('/test', methods=['POST', 'GET'])
 def test():
@@ -48,7 +48,9 @@ def test():
             print (im)
             name = recognize(im)
             print (name)
-    return render_template('test.html', im_path = im_path, face_name = name)
+        return render_template('test.html', im_path = im_path, face_name = name)
+    else:
+        return render_template('test.html')
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -83,5 +85,5 @@ def addmember():
     return render_template('index.html')
 
 # start flask app
-server_ip = '192.168.1.182'
+server_ip = 'localhost'
 app.run(host=server_ip, port=8080, debug=True)
