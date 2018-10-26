@@ -4,9 +4,11 @@ import face_recognition
 import cv2
 import pickle
 import pandas as pd
+import shutil
+
 '''
 Faces = {
-    '1_AiVanh':{'job':'teacher STEM','gender':'female','age':[18, 24]},
+    'AiVanh':{'job':'teacher STEM','gender':'female','age':[18, 24]},
     'BaoVan':{'job':'teacher STEM','gender':'female','age':[18, 24]},
     'DangHuy':{'job':'Engineer','gender':'male','age':[18, 24]},
     'HongLinh':{'job':'Sale Marketer','gender':'female','age':[18, 24]},
@@ -28,7 +30,7 @@ def update_member_to_csv(nickname, name, age, gender, job):
     info = info.append(df2)
     f = open('FaceDB.csv', 'wb')
     f.close()
-    info.to_csv('FaceDB.csv')
+    info.to_csv('FaceDB.csv',index=False, index_label='nickname', columns=['nickname','name','job','gender','age'])
     return info
 
 def load_face_db(path='FaceDb'):
@@ -60,7 +62,6 @@ def load_face_db(path='FaceDb'):
     return known_face_encodings, label_names
 
 # known_face_encodings, known_face_names = load_face_db()
-info = pd.read_csv('FaceDB.csv')
 known_face_encodings_f = open('known_face_encodings.pkl', 'rb')
 label_names_f = open('label_names.pkl', 'rb')
 known_face_encodings = pickle.load(known_face_encodings_f)
@@ -70,6 +71,7 @@ label_names_f.close()
 
 
 def recognize(im_array):
+    info = pd.read_csv('FaceDB.csv')
     face_locations = face_recognition.face_locations(im_array)
     face_encodings = face_recognition.face_encodings(im_array, face_locations)
     face_names = []
@@ -86,9 +88,44 @@ def recognize(im_array):
             face_names = None
     return infos_of_face
 
+def train_one_member(nickname):
+    nicknameFolderPath = os.path.join('FaceDb', nickname)
+    imageNames = os.listdir(nicknameFolderPath)
+    for im_name in imageNames:
+        im_path = os.path.join(nicknameFolderPath, im_name)
+        # im = face_recognition.load_image_file(im_path)
+        im = cv2.imread(im_path)
+        face_encodings = face_recognition.face_encodings(im)
+        if len(face_encodings) < 1:
+            print(im_name, ' loading fail')
+            continue
+        known_face_encodings.append(face_encodings[0])
+        known_face_names.append(nickname)
+        #
+        known_face_encodings_f = open('known_face_encodings.pkl', 'wb')
+        label_names_f = open('label_names.pkl', 'wb')
+        pickle.dump(known_face_encodings, known_face_encodings_f)
+        pickle.dump(known_face_names, label_names_f)
+        known_face_encodings_f.close()
+        label_names_f.close()
+
+def addnewmember(nickname):
+    members = os.listdir('FaceDb')
+    if nickname not in members: os.mkdir(os.path.join('FaceDb', nickname))
+    imageNames = os.listdir('tempFacePhotos')
+    nicknamePhotos = []
+    for imageName in imageNames:
+        if nickname in imageName:
+            tempImagePath = os.path.join('tempFacePhotos', imageName)
+            destImagePath = os.path.join('FaceDb', nickname)
+            try:
+                shutil.move(tempImagePath, destImagePath)
+                train_one_member(nickname)
+            except shutil.Error as e:
+                print (e)
+                pass
+
+
+
 if __name__ == "__main__":
-    start_time = time.time()
-    im = cv2.imread('FaceDb/KimNgan/KimNgan (3).jpeg')
-    name = recognize(im)
-    print (name)
-    print("--- %s seconds ---" % (time.time() - start_time))
+    load_face_db()

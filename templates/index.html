@@ -14,8 +14,9 @@
 {{infoTable}}<br>
 <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Update member</button>
   <div id="demo" class="collapse">
+      {{ dropzone.create(action='upload') }}
     <form action="/addmember" enctype="multipart/form-data" method="post">
-        <label for="nickname">Nickname</label>
+        <label for="nickname">Nickname</label><br>
         <input type="text" id="nickname" name="nickname"/><t>
         <label for="name">Tên</label>
         <input type="text" id="name" name="name"/><br>
@@ -25,9 +26,10 @@
         <input type="checkbox" style="left:5px" name="gender" value="female"><b>Nu</b><br>
         <label for="job">Job</label>
         <input type="text" id="job" name="job"/><br>
-        {{ dropzone.create('/') }}
-        <input type="submit" id="submit" value="Submit and Upload">
+        <input type="submit" id="submit" value="Submit">
     </form>
+  </div>
+{{comment}}
 
 <!--<form id="delete" action="/" method ="post" enctype=multipart/form-data>-->
     <!--<input id="index" type="text" name="number" placeholder="Enter index delete" autocomplete="off" style="width:200px" >-->
